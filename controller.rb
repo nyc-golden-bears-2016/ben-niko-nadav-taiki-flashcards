@@ -1,58 +1,70 @@
 require_relative 'deck'
 require_relative 'flashcards'
+require_relative 'view'
+
 
 class Controller
 
-  attr_reader :deck
+  attr_reader :deck, :number_of_corrects
 
-  def initialize(text_file)
-    @file = text_file
-    @deck = Deck.new
+  def initialize
     @number_of_corrects = 0
     @card = nil
-    build_deck
+    @card_length = 0
+    @view = View.new
+    choices
   end
 
-  def build_deck
-    if File.exist?(@file)
-      if File.readable?(@file)
-        File.open(@file, "r") do |file|
-          input_hash = {}
-          counter = 1
-          file.each_line do |line|
-            if counter % 3 != 0
-              if counter % 3 == 1
-                input_hash[:question] = line.chomp
-              else
-                input_hash[:answer] = line.chomp
-                @deck.flashcards << FlashCard.new(input_hash)
-                input_hash = {}
-              end
-            end
-            counter += 1
-          end
-        end
+  def run(text_file)
+    #get from model the data that is needed
+    @deck = Deck.new(text_file)
+    @deck.build_deck
+    @card_length = @deck.flashcards.length
+    #pass data to view for view to display to console
+    @deck.shuffle
+    @deck.flashcards.each_with_index do |question, i|
+      @card = @deck.flashcards[i]
+      if @view.display_question(@card.question).downcase == @card.answer
+        @number_of_corrects += 1
+        @view.clearscreen
+        @view.display_correct
       else
-        "file isn't readable"
+        @view.clearscreen
+        @view.display_incorrect
       end
-    else
-      "file doesn't exist"
     end
   end
 
-  def ask_question
-    @card = @deck.flashcards.shift
-    @card.question
-  end
-
-  def check_answer(user_answer)
-    if user_answer.downcase == @card.answer
-      @number_of_corrects += 1
-      true
-    else
-      false
+  def choices
+  user_choice = ""
+  while user_choice != "exit"
+    @view.display_menu
+    user_choice = gets.chomp
+    case user_choice
+      when "1"
+        @view.clearscreen
+        @view.display_choice("Nighthawks")
+        run("nighthawk_flashcard_data.txt")
+        @view.clearscreen
+        @view.display_number_of_correct(@number_of_corrects, @card_length)
+        gets.chomp
+      when "2"
+        @vew.clearscreen
+        @view.display_choice("Otter")
+        run("otter_flashcard_data.txt")
+        @view.clearscreen
+        @view.display_number_of_correct(@number_of_corrects, @card_length)
+        gets.chomp
+      when "3"
+        @view.clearscreen
+        @view.display_choice("Raccon")
+        run("raccoon_flashcard_data.txt")
+        @view.clearscreen
+        @view.display_number_of_correct(@number_of_corrects, @card_length)
+        gets.chomp
+      end
     end
   end
-
 end
+
 
