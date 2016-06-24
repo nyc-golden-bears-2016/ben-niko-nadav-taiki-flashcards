@@ -35,7 +35,7 @@ class View
   end
 
   def display_choice(quiz)
-    "#{quiz} Selected."
+    puts "#{quiz} Selected."
   end
 end
 
