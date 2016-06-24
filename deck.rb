@@ -5,27 +5,36 @@ class Deck
 
   def initialize(text_file)
     @file = text_file
-    @flashcards = [1, 2, 3, 4, 5, 6]
+    @flashcards = []
   end
 
   def read_file
-    File.open(@file, "r") do |file|
-      input_hash = {}
-      counter = 1
-      file.each_line do |line|
-        if counter % 3 != 0
-          if counter % 3 == 1
-            input_hash[:question] = line
-          else
-            input_hash[:answer] = line
-             @flashcards << FlashCard.new(input_hash)
-            input_hash = {}
+    if File.exist?(@file)
+      if File.readable(@file)
+        File.open(@file, "r") do |file|
+          input_hash = {}
+          counter = 1
+          file.each_line do |line|
+            if counter % 3 != 0
+              if counter % 3 == 1
+                input_hash[:question] = line
+              else
+                input_hash[:answer] = line
+                @flashcards << FlashCard.new(input_hash)
+                input_hash = {}
+              end
+            end
+            counter += 1
           end
         end
-        counter += 1
+      else
+        "file isn't readable"
       end
+    else
+      "file doesn't exist"
     end
   end
+
 
   def shuffle
     @flashcards.shuffle!
