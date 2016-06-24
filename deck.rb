@@ -1,9 +1,11 @@
 class Deck
   require 'pry'
 
+  attr_reader :flashcards
+
   def initialize(text_file)
     @file = text_file
-    @flashcards = []
+    @flashcards = [1, 2, 3, 4, 5, 6]
   end
 
   def read_file
@@ -16,17 +18,19 @@ class Deck
             input_hash[:question] = line
           else
             input_hash[:answer] = line
-             #flashcard = FlashCard.new(input_hash)
-            p input_hash
+             @flashcards << FlashCard.new(input_hash)
             input_hash = {}
-#thing
           end
         end
         counter += 1
       end
     end
   end
+
+  def shuffle
+    @flashcards.shuffle!
+  end
 end
 
-test = Deck.new("raccoon_flashcard_data.txt")
-test.read_file
+
+
