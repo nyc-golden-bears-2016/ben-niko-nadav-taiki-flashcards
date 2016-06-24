@@ -19,7 +19,7 @@ class Deck
              #flashcard = FlashCard.new(input_hash)
             p input_hash
             input_hash = {}
-
+#thing
           end
         end
         counter += 1
