@@ -2,13 +2,13 @@ require_relative 'deck'
 require_relative 'flashcards'
 require_relative 'view'
 
+require 'pry'
 
 class Controller
 
   attr_reader :deck, :number_of_corrects
 
   def initialize
-    @number_of_corrects = 0
     @card = nil
     @card_length = 0
     @view = View.new
@@ -17,6 +17,7 @@ class Controller
 
   def run(text_file)
     #get from model the data that is needed
+    @number_of_corrects = 0
     @deck = Deck.new(text_file)
     @deck.build_deck
     @card_length = @deck.flashcards.length
@@ -36,34 +37,22 @@ class Controller
   end
 
   def choices
-  user_choice = ""
-  while user_choice != "exit"
-    @view.display_menu
-    user_choice = gets.chomp
-    case user_choice
-      when "1"
-        @view.clearscreen
-        @view.display_choice("Nighthawks")
-        run("nighthawk_flashcard_data.txt")
-        @view.clearscreen
-        @view.display_number_of_correct(@number_of_corrects, @card_length)
-        gets.chomp
-      when "2"
-        @vew.clearscreen
-        @view.display_choice("Otter")
-        run("otter_flashcard_data.txt")
-        @view.clearscreen
-        @view.display_number_of_correct(@number_of_corrects, @card_length)
-        gets.chomp
-      when "3"
-        @view.clearscreen
-        @view.display_choice("Raccon")
-        run("raccoon_flashcard_data.txt")
-        @view.clearscreen
-        @view.display_number_of_correct(@number_of_corrects, @card_length)
-        gets.chomp
+    user_choice = ""
+    choosen_quiz = ["Nighthwak", "Otter", "Raccoon"]
+    choosen_quiz_file_name = ["nighthawk_flashcard_data.txt", "otter_flashcard_data.txt", "raccoon_flashcard_data.txt"]
+   
+      while user_choice != "exit"
+        @view.display_menu
+        user_choice = gets.chomp
+        if user_choice.to_i.between?(1, 3)
+          @view.clearscreen
+          @view.display_choice(choosen_quiz[user_choice.to_i-1])
+          run(choosen_quiz_file_name[user_choice.to_i-1])
+          @view.clearscreen
+          @view.display_number_of_correct(@number_of_corrects, @card_length)
+          gets.chomp
+        end
       end
-    end
   end
 end
 
