@@ -10,6 +10,7 @@ class Controller
     @deck = Deck.new
     @number_of_corrects = 0
     @card = nil
+    build_deck
   end
 
   def build_deck
